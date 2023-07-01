@@ -12,6 +12,7 @@ import { COMMENTS } from '../shared/comments';
 import { PROMOTIONS } from '../shared/promotions';
 import { LEADERS } from '../shared/leaders';
 import { connect } from 'react-redux';
+import { addComment } from '../redux/ActionCreators';
 
 class Main extends Component {
 
@@ -21,24 +22,26 @@ class Main extends Component {
 
     render() {
         const HomePage = () => {
-            return(
-                <Home 
+            return (
+                <Home
                     dish={this.props.dishes.filter((dish) => dish.featured)[0]}
                     promotion={this.props.promotions.filter((promo) => promo.featured)[0]}
                     leader={this.props.leaders.filter((leader) => leader.featured)[0]}
                 />
             );
-          }
-      
+        }
 
-          const DishWithId = () => {
-            const {dishId} = useParams();
-            return(
-                <DishDetail dish={this.props.dishes.filter((dish) => dish.id === parseInt(dishId,10))[0]} 
-                  comments={this.props.comments.filter((comment) => comment.dishId === parseInt(dishId,10))} />
+
+        const DishWithId = () => {
+            const { dishId } = useParams();
+            return (
+                <DishDetail dish={this.props.dishes.filter((dish) => dish.id === parseInt(dishId, 10))[0]}
+                    comments={this.props.comments.filter((comment) => comment.dishId === parseInt(dishId, 10))}
+                    addComment={this.props.addComment}
+                />
             );
-          };
-      
+        };
+
 
         return (
             <div>
@@ -56,12 +59,18 @@ class Main extends Component {
     }
 }
 
-const mapStateToProps = state => ({
-      dishes: state.dishes,
-      comments: state.comments,
-      promotions: state.promotions,
-      leaders: state.leaders
-  });
-  
+const mapDispatchToProps = dispatch => ({
 
-  export default connect(mapStateToProps)(Main);
+    addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment))
+
+});
+
+const mapStateToProps = state => ({
+    dishes: state.dishes,
+    comments: state.comments,
+    promotions: state.promotions,
+    leaders: state.leaders
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
